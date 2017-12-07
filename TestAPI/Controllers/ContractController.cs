@@ -35,7 +35,7 @@ namespace TestAPI.Controllers
             //    _context.SaveChanges();
             //}
         }
-        // GET api/values
+        /// GET api/values
         //[HttpGet]
         //public IEnumerable<Contract> GetAll()
         //{

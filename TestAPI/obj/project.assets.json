@@ -13207,11 +13207,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Users\\sr15238\\TestAPI\\TestAPI\\TestAPI.csproj",
+      "projectUniqueName": "C:\\Users\\sr15238\\RESTFulApi\\TestAPI\\TestAPI.csproj",
       "projectName": "TestAPI",
-      "projectPath": "C:\\Users\\sr15238\\TestAPI\\TestAPI\\TestAPI.csproj",
+      "projectPath": "C:\\Users\\sr15238\\RESTFulApi\\TestAPI\\TestAPI.csproj",
       "packagesPath": "C:\\Users\\sr15238\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\sr15238\\TestAPI\\TestAPI\\obj\\",
+      "outputPath": "C:\\Users\\sr15238\\RESTFulApi\\TestAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

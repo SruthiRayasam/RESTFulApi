@@ -89,18 +89,27 @@ namespace TestAPI.Controllers
                 if (contract.LoanAmount > 0 && contract.LoanAmount <= 500000)
                 {
                     contract.ContractType = "ExpressContract";
+                    entry.CurrentValues.SetValues(contract);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                else if(contract.LoanAmount >0)
                 {
                     contract.ContractType = "SalesContract";
-                }
-                if (contract.LoanAmount > 0)
-                {
                     entry.CurrentValues.SetValues(contract);
                     await _context.SaveChangesAsync();
                 }
                 else
                 {
+                    var logdetails = new EventLog()
+                    {
+                        ContractId = contract.ContractId,
+                        LogMessage = "Loan Amount is less than 0, cannot create Contract for:" + contract.DealerName,
+                        VersionUser = "testuser",
+                        VersionDate = DateTime.Now
+                    };
+                    var errorlog = _context.Add(new EventLog());
+                    errorlog.CurrentValues.SetValues(logdetails);
+                    await _context.SaveChangesAsync();
                     return StatusCode(417);
                 }
             }
@@ -145,13 +154,30 @@ namespace TestAPI.Controllers
                 if (item.LoanAmount > 0 && item.LoanAmount <= 500000)
                 {
                     contractitem.ContractType = "ExpressContract";
+                    _context.Contracts.Update(contractitem);
+                    _context.SaveChanges();
+                }
+                else if(item.LoanAmount > 0)
+                {
+                    contractitem.ContractType = "SalesContract";
+                    _context.Contracts.Update(contractitem);
+                    _context.SaveChanges();
                 }
                 else
                 {
-                    contractitem.ContractType = "SalesContract";
+                    var logdetails = new EventLog()
+                    {
+                        ContractId = contractitem.ContractId,
+                        LogMessage = "Loan Amount is less than 0, cannot update Contract for:" + contractitem.DealerName,
+                        VersionUser = "testuser",
+                        VersionDate = DateTime.Now
+                    };
+                    var errorlog = _context.Add(new EventLog());
+                    errorlog.CurrentValues.SetValues(logdetails);
+                    _context.SaveChangesAsync();
+                    return StatusCode(417);
                 }
-                _context.Contracts.Update(contractitem);
-                _context.SaveChanges();
+                
             }
             catch (Exception ex)
             {
@@ -202,7 +228,7 @@ namespace TestAPI.Controllers
                 _context.SaveChangesAsync();
                 return StatusCode(417);
             }
-            return new NoContentResult();
+            return Ok("Contract Deleted");
         }
     }
 }

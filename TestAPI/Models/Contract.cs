@@ -12,7 +12,6 @@ namespace TestAPI.Models
         public string businessNumber { get; set; }
         public DateTime contractActivationDate { get; set; }
         public double LoanAmount { get; set; }
-
         public string ContractType { get; set; }
         public string status { get; set; }
     }

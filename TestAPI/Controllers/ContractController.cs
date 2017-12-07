@@ -22,26 +22,13 @@ namespace TestAPI.Controllers
         {
             _context = context;
 
-            //if (_context.Count() == 0)
-            //{
-            //    _context.Contracts.Add(new Contract
-            //    {
-            //        dealerName = "TestDealer1",
-            //        businessNumber = "317-242-4339",
-            //        contractActivationDate = DateTime.Today,
-            //        LoanAmount = 250000.00,
-            //        status = "Approved"
-            //    });
-            //    _context.SaveChanges();
-            //}
         }
-
 
         // GET api/values/1
         [HttpGet(Name = "GetContract")]
         public IActionResult GetAllContracts()
         {
-            var item = _context.Contracts;
+            var item = _context.Contracts.Select(t=> t.Status =="Approved");
             try
             {
 
@@ -54,6 +41,40 @@ namespace TestAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+            }
+            catch (Exception ex)
+            {
+                var logdetails = new EventLog()
+                {
+                    ContractId = 0,
+                    LogMessage = ex.Message,
+                    VersionUser = "testuser",
+                    VersionDate = DateTime.Now
+                };
+                var errorlog = _context.Add(new EventLog());
+                errorlog.CurrentValues.SetValues(logdetails);
+                _context.SaveChangesAsync();
+
+            }
+            return new ObjectResult(item);
+        }
+
+        [HttpGet("{Id}")]
+        public IActionResult GetByContractId(long Id)
+        {
+            var item = _context.Contracts.FirstOrDefault(t => t.ContractId == Id);
+            try
+            {
+
+                if (item == null)
+                {
+                    return NotFound();
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
             }
             catch (Exception ex)
             {

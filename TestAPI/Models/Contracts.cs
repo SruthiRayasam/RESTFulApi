@@ -16,5 +16,6 @@ namespace TestAPI.Models
         public DateTime? VersionDate { get; set; }
         public string RowCreatedUser { get; set; }
         public DateTime? RowCreatedDate { get; set; }
+
     }
 }

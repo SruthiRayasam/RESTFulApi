@@ -35,22 +35,39 @@ namespace TestAPI.Controllers
             //    _context.SaveChanges();
             //}
         }
-        /// GET api/values
-        //[HttpGet]
-        //public IEnumerable<Contract> GetAll()
-        //{
-        //     return _context.Contracts
-        //    //{ "value1", "value2" };
-        //}
+
 
         // GET api/values/1
         [HttpGet(Name = "GetContract")]
         public IActionResult GetAllContracts()
         {
             var item = _context.Contracts;
-            if (item == null)
+            try
             {
-                return NotFound();
+
+                if (item == null)
+                {
+                    return NotFound();
+                }
+            
+             if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            }
+            catch (Exception ex)
+            {
+                var logdetails = new EventLog()
+                {
+                    ContractId = 0,
+                    LogMessage = ex.Message,
+                    VersionUser = "testuser",
+                    VersionDate = DateTime.Now
+                };
+                var errorlog = _context.Add(new EventLog());
+                errorlog.CurrentValues.SetValues(logdetails);
+                _context.SaveChangesAsync();
+
             }
             return new ObjectResult(item);
         }
@@ -69,17 +86,32 @@ namespace TestAPI.Controllers
             try
             {
                 var entry = _context.Add(new Contracts());
-                entry.CurrentValues.SetValues(contract);
-                await _context.SaveChangesAsync();
+                if (contract.LoanAmount > 0 && contract.LoanAmount <= 500000)
+                {
+                    contract.ContractType = "ExpressContract";
+                }
+                else
+                {
+                    contract.ContractType = "SalesContract";
+                }
+                if (contract.LoanAmount > 0)
+                {
+                    entry.CurrentValues.SetValues(contract);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return StatusCode(417);
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var logdetails = new EventLog()
                 {
                     ContractId = contract.ContractId,
-                    LogMessage=ex.Message,
-                    VersionUser="testuser",
-                    VersionDate=DateTime.Now
+                    LogMessage = ex.Message,
+                    VersionUser = "testuser",
+                    VersionDate = DateTime.Now
                 };
                 var errorlog = _context.Add(new EventLog());
                 errorlog.CurrentValues.SetValues(logdetails);
@@ -90,32 +122,52 @@ namespace TestAPI.Controllers
 
         // PUT api/values/5.
         [HttpPut]
-        public IActionResult Update([FromBody] Contract item)
+        public IActionResult Update([FromBody] Contracts item)
         {
             if (item == null)
             {
                 return BadRequest();
             }
 
-          //  var contractitem = _context.ContractDetails.FirstOrDefault(t => t.contractId == item.contractId);
-            //if (contractitem == null)
-            //{
-            //    return NotFound();
-            //}
-            try
-            { 
-            //contractitem.LoanAmount = item.LoanAmount;
-            //contractitem.dealerName = item.dealerName;
-
-            //_context.ContractDetails.Update(contractitem);
-            //_context.SaveChanges();
-            }
-            catch(Exception ex)
+            var contractitem = _context.Contracts.FirstOrDefault(t => t.ContractId == item.ContractId);
+            if (contractitem == null)
             {
-                logger.Error(ex, ex.Message);
+                return NotFound();
             }
-            // return CreatedAtRoute("GetContract", new { id = contractitem.contractId }, contractitem);
-            return new NoContentResult();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                contractitem.LoanAmount = item.LoanAmount;
+                contractitem.DealerName = item.DealerName;
+                if (item.LoanAmount > 0 && item.LoanAmount <= 500000)
+                {
+                    contractitem.ContractType = "ExpressContract";
+                }
+                else
+                {
+                    contractitem.ContractType = "SalesContract";
+                }
+                _context.Contracts.Update(contractitem);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                var logdetails = new EventLog()
+                {
+                    ContractId = contractitem.ContractId,
+                    LogMessage = ex.Message,
+                    VersionUser = "testuser",
+                    VersionDate = DateTime.Now
+                };
+                var errorlog = _context.Add(new EventLog());
+                errorlog.CurrentValues.SetValues(logdetails);
+                _context.SaveChangesAsync();
+            }
+            return CreatedAtRoute("GetContract", new { id = contractitem.ContractId }, contractitem);
+            // return new NoContentResult();
         }
 
         // DELETE api/values/5

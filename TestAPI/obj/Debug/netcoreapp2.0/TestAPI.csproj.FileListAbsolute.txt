@@ -13,7 +13,6 @@ C:\Users\sr15238\RESTFulApi\TestAPI\bin\Debug\netcoreapp2.0\TestAPI.runtimeconfi
 C:\Users\sr15238\RESTFulApi\TestAPI\bin\Debug\netcoreapp2.0\TestAPI.runtimeconfig.dev.json
 C:\Users\sr15238\RESTFulApi\TestAPI\bin\Debug\netcoreapp2.0\TestAPI.dll
 C:\Users\sr15238\RESTFulApi\TestAPI\bin\Debug\netcoreapp2.0\TestAPI.pdb
-C:\Users\sr15238\RESTFulApi\TestAPI\obj\Debug\netcoreapp2.0\TestAPI.csprojResolveAssemblyReference.cache
 C:\Users\sr15238\RESTFulApi\TestAPI\obj\Debug\netcoreapp2.0\TestAPI.csproj.CoreCompileInputs.cache
 C:\Users\sr15238\RESTFulApi\TestAPI\obj\Debug\netcoreapp2.0\TestAPI.AssemblyInfoInputs.cache
 C:\Users\sr15238\RESTFulApi\TestAPI\obj\Debug\netcoreapp2.0\TestAPI.AssemblyInfo.cs

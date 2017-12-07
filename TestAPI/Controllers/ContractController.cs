@@ -120,22 +120,36 @@ namespace TestAPI.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromBody] Contract item)
+        public IActionResult Delete([FromBody] Contracts item)
         {
-            //var contract = _context.ContractDetails.FirstOrDefault(t => t.contractId == item.contractId);
-            //if (contract == null)
-            //{
-            //    return NotFound();
-            //}
-            //try
-            //{ 
-            //_context.ContractDetails.Remove(contract);
-            //_context.SaveChanges();
-            //}
-            //catch(Exception ex)
-            //{
-            //    logger.Error(ex, ex.Message);
-            //}
+            var contract = _context.Contracts.FirstOrDefault(t => t.ContractId == item.ContractId);
+            if (contract == null)
+            {
+                return NotFound();
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                _context.Contracts.Remove(contract);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                var logdetails = new EventLog()
+                {
+                    ContractId = contract.ContractId,
+                    LogMessage = ex.Message,
+                    VersionUser = "testuser",
+                    VersionDate = DateTime.Now
+                };
+                var errorlog = _context.Add(new EventLog());
+                errorlog.CurrentValues.SetValues(logdetails);
+                _context.SaveChangesAsync();
+                return StatusCode(417);
+            }
             return new NoContentResult();
         }
     }
